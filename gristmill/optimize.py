@@ -2408,7 +2408,7 @@ class _Optimizer:
         for k, v in pull_info.items():
             pivot = k[0][0]
             assert len(pivot) > 0
-            assert k[0][1] == 1
+            assert abs(k[0][1] - 1) < 1e-12
             if len(v) == 1:
                 # No need to form a new intermediate.
                 base, coeff = v[0]
