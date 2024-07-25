@@ -5,7 +5,7 @@ import subprocess
 from unittest.mock import patch
 
 import pytest
-from sympy import Symbol, IndexedBase, symbols
+from sympy import Symbol, IndexedBase, symbols, Float
 from sympy.printing.python import PythonPrinter
 
 from drudge import Drudge, Range
@@ -132,8 +132,9 @@ def test_base_printer_ctx(simple_drudge, colourful_tensor):
             # The transpose term.
 
             assert term.phase == '+'
-            assert term.numerator == '2*r'
-            assert term.denominator == '(3*s)'
+            r = Symbol('r')
+            assert float(eval(term.numerator) / r) == 2/3
+            assert term.denominator == 's'
 
             assert len(term.indexed_factors) == 1
             factor = term.indexed_factors[0]
@@ -149,8 +150,8 @@ def test_base_printer_ctx(simple_drudge, colourful_tensor):
             check_range(term.sums[0], 'c')
 
             assert term.phase == '-'
-            assert term.numerator == '1'
-            assert term.denominator == '2'
+            assert float(eval(term.numerator)) == 0.5
+            assert term.denominator == '1'
 
             assert len(term.indexed_factors) == 2
             for factor in term.indexed_factors:

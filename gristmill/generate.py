@@ -342,14 +342,10 @@ class BasePrinter(abc.ABC):
                     if factor != 1:
                         numerator.append(factor)
                 elif isinstance(factor, Rational):
-                    for i, j in [
-                        (factor.p, numerator), (factor.q, denominator)
-                    ]:
-                        if i < 0:
-                            phase *= -1
-                            i = -i
-                        if i != 1:
-                            j.append(i)
+                    if factor.p < 0:
+                        phase *= -1
+                        factor = -factor
+                    numerator.insert(0, factor.evalf())
                 elif isinstance(factor, Pow) and factor.args[1].is_negative:
                     denominator.append(1 / factor)
                 else:
