@@ -2,13 +2,13 @@
 {%- if term.numerator == '1' -%}
     {%- if term.denominator != '1' -%}
         {{ '1.0 / ' }}{{ term.denominator }}{{ ' * ' }}
-    {%- endif %}
-{%- else -%}
-    {%- if term.denominator == '1' -%}
-        {{ term.numerator }}{{ ' * ' }}
-    {%- else -%}
-        {{ term.numerator }}{{ ' / ' }}{{ term.denominator }}{{ ' * ' }}
     {%- endif -%}
+{%- else -%}
+    {{ term.numerator }}
+    {%- if term.denominator != '1' -%}
+        {{ ' / ' }}{{ term.denominator }}
+    {%- endif -%}
+    {{ ' * ' }}
 {%- endif -%}
 {{ einsum }}(
 {{ cont_indent | form_indent }}"
