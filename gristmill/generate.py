@@ -11,10 +11,11 @@ from drudge.term import try_resolve_range
 from sympy import (
     Expr, Mul, Pow, Integer, Rational, Add, Indexed, IndexedBase, Symbol
 )
+from sympy.printing.printer import Printer
 from sympy.printing.c import C89CodePrinter
 from sympy.printing.fortran import FCodePrinter
-from sympy.printing.printer import Printer
-from sympy.printing.python import PythonPrinter
+from sympy.printing.pycode import PythonCodePrinter
+from sympy.printing.julia import JuliaCodePrinter
 
 from drudge import TensorDef, Term, Range, prod_
 from .utils import JinjaEnv
@@ -1481,7 +1482,7 @@ class EinsumPrinter(BasePrinter):
             globals_.update(add_globals)
 
         super().__init__(
-            PythonPrinter(), extr_unary=extr_unary, add_globals=globals_,
+            PythonCodePrinter(), extr_unary=extr_unary, add_globals=globals_,
             **kwargs
         )
 
