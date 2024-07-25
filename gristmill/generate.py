@@ -1522,7 +1522,7 @@ class EinsumPrinter(BasePrinter):
 
         ctx = event.comput.ctx
         ctx.term = event.term_ctx
-        code = self.render('einsum.j2', ctx)
+        code = self.render('einsum.jinja', ctx)
         del ctx.term
 
         return code

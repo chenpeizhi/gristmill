@@ -1,6 +1,14 @@
 {{ base }} {{ term.phase }}{{ '= ' }}
-{%- if term.numerator != '1' -%}
-    {{ term.numerator }}{{ ' * ' }}
+{%- if term.numerator == '1' -%}
+    {%- if term.denominator != '1' -%}
+        {{ '1.0 / ' }}{{ term.denominator }}{{ ' * ' }}
+    {%- endif %}
+{%- else -%}
+    {%- if term.denominator == '1' -%}
+        {{ term.numerator }}{{ ' * ' }}
+    {%- else -%}
+        {{ term.numerator }}{{ ' / ' }}{{ term.denominator }}{{ ' * ' }}
+    {%- endif -%}
 {%- endif -%}
 {{ einsum }}(
 {{ cont_indent | form_indent }}"
@@ -12,5 +20,4 @@
     {{ factor.base }}{% if not loop.last %}, {% endif %}
 {%- endfor %}
 
-){% if term.denominator != '1' -%}
-{{ ' /' }} {{ term.denominator }}{% endif %}
+)
