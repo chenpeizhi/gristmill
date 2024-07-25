@@ -1510,11 +1510,11 @@ class EinsumPrinter(BasePrinter):
             else:
                 args = '{}, dtype={}'.format(shape, self._dtype)
 
-            lhs = '{}({})'.format(self._zeros, args)
+            rhs = '{}({})'.format(self._zeros, args)
         else:
-            lhs = '0'
+            rhs = '0.0'
 
-        return '{} = {}'.format(ctx.base, lhs)
+        return '{} = {}'.format(ctx.base, rhs)
 
     def print_comp_term(self, event: CompTerm):
         """Print the evaluation of a term to be added to the target.
