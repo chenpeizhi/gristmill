@@ -1631,7 +1631,13 @@ class OMEinsumPrinter(BasePrinter):
 
         ctx = event.comput.ctx
         ctx.term = event.term_ctx
-        code = self.render('ein_str.jinja', ctx)
+        if (
+            len(ctx.term.indexed_factors) == 1
+            and ctx.term.indexed_factors[0].indices == ctx.indices
+        ):
+            code = self.render('omeinsum_nocopy.jinja', ctx)
+        else:
+            code = self.render('ein_str.jinja', ctx)
         del ctx.term
 
         return code
