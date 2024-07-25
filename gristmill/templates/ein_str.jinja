@@ -9,9 +9,11 @@
         {%- if term.denominator != '1' -%}
             {{ ' / ' }}{{ term.denominator }}
         {%- endif -%}
-        {{ ' * ' }}
     {%- endif -%}
     {%- if term.indexed_factors | length != 0 -%}
+        {%- if term.numerator != '1' -%}
+            {{ ' * ' }}
+        {%- endif -%}
         {{ ein }}"
         {%- for factor in term.indexed_factors -%}
             {%- for i in factor.indices -%}
