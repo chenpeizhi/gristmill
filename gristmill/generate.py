@@ -9,7 +9,8 @@ import typing
 
 from drudge.term import try_resolve_range
 from sympy import (
-    Expr, Mul, Pow, Integer, Rational, Add, Indexed, IndexedBase, Symbol
+    Expr, Add, Mul, Pow, Integer, Rational, Float, Indexed, IndexedBase,
+    Symbol
 )
 from sympy.printing.printer import Printer
 from sympy.printing.c import C89CodePrinter
@@ -351,6 +352,17 @@ class BasePrinter(abc.ABC):
                 else:
                     numerator.append(factor)
                 continue
+
+            if (
+                len(denominator) == 0 and (
+                    len(numerator) == 1
+                    and isinstance(numerator[0], (Integer, Float, Symbol))
+                    or len(numerator) == 0
+                )
+            ):
+                term_ctx.single_factor = True
+            else:
+                term_ctx.single_factor = False
 
             term_ctx.phase = '+' if phase == 1 else '-'
             for i, j, k in [
@@ -1531,6 +1543,103 @@ class EinsumPrinter(BasePrinter):
         """Remove an used intermediate tensor.
         """
         return 'del {}'.format(event.comput.ctx.base)
+
+    def print_end_body(self, event: EndBody):
+        """Do nothing.
+        """
+        return None
+
+
+#
+# OMEinsum printer
+# --------------
+#
+
+
+class OMEinsumPrinter(BasePrinter):
+    """Printer for Julia using the `OMEinsum.jl` package
+
+    For tensors that are classical tensor contractions, this printer generates
+    using the ``@ein_str`` macro in `OMEinsum.jl`.
+
+    Parameters
+    ----------
+
+    default_type
+        The default data type for tensor declarations.
+
+    """
+
+    def __init__(
+            self, default_type='Float64', extr_unary=True,
+            add_globals=None, **kwargs
+    ):
+        """Initialize the printer.
+        """
+
+        globals_ = {
+            'ein': 'ein'
+        }
+        if add_globals is not None:
+            globals_.update(add_globals)
+
+        super().__init__(
+            JuliaCodePrinter(), extr_unary=extr_unary, add_globals=globals_,
+            **kwargs
+        )
+
+        self._zeros = 'zeros'
+        self._default_type = default_type
+        self._ein_str = 'ein'
+
+    def print_decl(self, event: TensorDecl):
+        """Do nothing.
+        """
+        return None
+
+    def print_begin_body(self, event: BeginBody):
+        """Do nothing.
+        """
+        return None
+
+    def print_before_comp(self, event: BeforeComp):
+        """Initialize the tensor to zero.
+        """
+        ctx = event.comput.ctx
+
+        if len(ctx.indices) > 0:
+            shape = '{}'.format(', '.join(
+                i.size for i in ctx.indices
+            ))
+            if self._default_type is None:
+                args = shape
+            else:
+                args = '{}, {}'.format(self._default_type, shape)
+
+            rhs = '{}({})'.format(self._zeros, args)
+        else:
+            if self._default_type is None:
+                rhs = '0.0'
+            else:
+                rhs = 'zero({})'.format(self._default_type)
+
+        return '{} = {}'.format(ctx.base, rhs)
+
+    def print_comp_term(self, event: CompTerm):
+        """Print the evaluation of a term to be added to the target.
+        """
+
+        ctx = event.comput.ctx
+        ctx.term = event.term_ctx
+        code = self.render('ein_str.jinja', ctx)
+        del ctx.term
+
+        return code
+
+    def print_out_of_use(self, event: OutOfUse):
+        """Remove an used intermediate tensor.
+        """
+        return '{} = nothing'.format(event.comput.ctx.base)
 
     def print_end_body(self, event: EndBody):
         """Do nothing.
