@@ -992,7 +992,7 @@ class _BronKerbosch:
                     i for i in to_loop if subg[i].saving == greedy_saving
                 }
                 if cut_full:
-                    to_loop = {random.sample(to_loop, 1).pop()}
+                    to_loop = {random.sample(list(to_loop), 1).pop()}
                     pivots = []
 
         # Designated vertices that can be excluded for each pivot.
