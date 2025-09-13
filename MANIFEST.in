@@ -1,0 +1,5 @@
+recursive-include deps/cpypp/include *.hpp
+recursive-include deps/fbitset/include *.hpp
+recursive-include deps/libparenth/include *.hpp
+
+recursive-include gristmill/templates *
