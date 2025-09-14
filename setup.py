@@ -15,8 +15,16 @@ if sys.platform == "win32":
     # MSVC compiler flags
     COMPILE_FLAGS = ['/std:c++17']
 else:
-    # GCC/Clang compiler flags
-    COMPILE_FLAGS = ['-std=gnu++1z']
+    # GCC/Clang compiler flags - use more standard C++17 instead of gnu++1z
+    COMPILE_FLAGS = ['-std=c++17']
+    
+    # Additional flags for macOS to avoid header conflicts
+    if sys.platform == "darwin":
+        # Use libc++ standard library explicitly on macOS
+        COMPILE_FLAGS.extend([
+            '-stdlib=libc++',
+            '-mmacosx-version-min=10.9'
+        ])
 
 parenth = Extension(
     'gristmill._parenth',
