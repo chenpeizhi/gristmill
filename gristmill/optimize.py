@@ -992,7 +992,7 @@ class _BronKerbosch:
                     i for i in to_loop if subg[i].saving == greedy_saving
                 }
                 if cut_full:
-                    to_loop = {random.sample(to_loop, 1).pop()}
+                    to_loop = {random.sample(list(to_loop), 1).pop()}
                     pivots = []
 
         # Designated vertices that can be excluded for each pivot.
@@ -2408,7 +2408,7 @@ class _Optimizer:
         for k, v in pull_info.items():
             pivot = k[0][0]
             assert len(pivot) > 0
-            assert k[0][1] == 1
+            assert abs(k[0][1] - 1) < 1e-12
             if len(v) == 1:
                 # No need to form a new intermediate.
                 base, coeff = v[0]
