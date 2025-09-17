@@ -62,9 +62,7 @@ $$
 can be automatically simplified into
 
 $$
-E = \frac{1}{4} \sum_{i,j=1}^o \sum_{a,b=1}^v u_{ijab} \left(
-    t^{(2)}_{abij} + 2 t^{(1)}_{ai} t^{(1)}_{bj}
-\right),
+E = \frac{1}{4} \sum_{i,j=1}^o \sum_{a,b=1}^v u_{ijab} \left(t^{(2)}_{abij} + 2 t^{(1)}_{ai} t^{(1)}_{bj}\right),
 $$
 
 which has lower FLOP count.
