@@ -79,6 +79,7 @@ celerybeat-schedule
 .env
 
 # virtualenv
+.venv/
 venv/
 ENV/
 
@@ -88,8 +89,6 @@ ENV/
 # Rope project settings
 .ropeproject
 
-/.idea/workspace.xml
-/.idea/markdown*
 /tests/test-env.sh
 /scratch/
 .pytest_cache
@@ -97,3 +96,10 @@ tests/*.pickle
 
 # For dockerignore
 .git
+
+# Editors
+.idea/
+.ycm_extra_conf.py
+
+# macOS cruft
+.DS_Store

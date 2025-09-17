@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gristmill"
+version = "0.9.0"
+description = "A tensor contraction optimizer and code generator based on Drudge"
+requires-python = ">=3.12"
+dependencies = [
+  "drudge @ git+https://github.com/DrudgeCAS/drudge.git@master",
+  "jinja2",
+  "sympy>=1.14",
+  "numpy",
+  "networkx>=2.0"
+]
+classifiers = [
+  'Development Status :: 4 - Beta',
+  'Intended Audience :: Developers',
+  'Intended Audience :: Science/Research',
+  'Programming Language :: Python :: 3 :: Only',
+  'Topic :: Scientific/Engineering :: Mathematics'
+]
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+  { name = "Jinmo Zhao", email = "tschijnmotschau@gmail.com" },
+  { name = "Gustavo E. Scuseria" }
+]
+maintainers = [
+  { name = "Guo P. Chen" },
+  { name = "Gaurav Harsha" }
+]
+
+[project.optional-dependencies]
+docs = ["sphinx"]
+dev = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/DrudgeCAS/gristmill"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+gristmill = ["templates/*"]
