@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use Drudge, please cite the following works."
+message: "If you use Gristmill, please cite the following works."
 authors:
   - family-names: Zhao
     given-names: Jinmo
@@ -7,24 +7,23 @@ authors:
     given-names: Guo P.
   - family-names: Harsha
     given-names: Gaurav
-  - family-names: Wholey
-    given-names: Matthew
   - family-names: Henderson
     given-names: Thomas M.
   - family-names: Scuseria
     given-names: Gustavo E.
-title: "Drudge: A symbolic algebra system for tensorial and noncommutative algebras"
+title: "Gristmill: A tensor contraction optimizer and code generator based on Drudge"
 type: software
-repository-code: "https://github.com/DrudgeCAS/drudge"
-abstract: "Drudge is a symbolic algebra system built on top of SymPy, focusing primarily on tensorial and noncommutative algebras. It is motivated by tedious symbolic derivations in quantum chemistry and many-body theory but is also useful for any symbolic manipulation and simplification involving indexed quantities, symbolic summations, and noncommutative algebras."
+repository-code: "https://github.com/DrudgeCAS/gristmill"
+abstract: "Gristmill is a package built on the drudge algebra system for automatic optimization and code generation of tensor computations. While designed for quantum chemistry and many-body theory, it is suitable for any scientific computing problem involving tensors."
 keywords:
-  - symbolic algebra
-  - tensor algebra
+  - tensor optimization
+  - code generation
   - quantum chemistry
   - many-body theory
+  - computational chemistry
 license: MIT
-version: 0.11.0
-date-released: 2025-09-15
+version: 0.9.0
+date-released: 2025-01-01
 
 references:
   - type: thesis
@@ -33,6 +32,8 @@ references:
         given-names: Jinmo
     title: "Symbolic Solution for Computational Quantum Many-Body Theory Development"
     year: 2018
+    month: 4
     publisher: Rice University
+    thesis-type: "PhD thesis"
     url: "https://www.proquest.com/openview/61a9a86c07dbb6e5270bdeb1c84384db/1?pq-origsite=gscholar&cbl=18750&diss=y"
 

@@ -1,5 +1,6 @@
 ![CI](https://github.com/DrudgeCAS/gristmill/workflows/CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/DrudgeCAS/gristmill/badge.svg?branch=master)](https://coveralls.io/github/DrudgeCAS/gristmill?branch=master)
+[![Citation](https://img.shields.io/badge/cite-CITATION.cff-blue)](./CITATION.cff)
 
 <h1 align="center">Gristmill</h1>
 
