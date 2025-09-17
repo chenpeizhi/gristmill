@@ -1,11 +1,10 @@
-![CircleCI](https://circleci.com/gh/tschijnmo/gristmill.svg?style=shield)
-[![Travis CI](https://travis-ci.org/tschijnmo/gristmill.svg?branch=master)](https://travis-ci.org/tschijnmo/gristmill)
-[![Coverage Status](https://coveralls.io/repos/github/tschijnmo/gristmill/badge.svg?branch=master)](https://coveralls.io/github/tschijnmo/gristmill?branch=master)
+![CircleCI](https://circleci.com/gh/DrudgeCAS/gristmill.svg?style=shield)
+[![Coverage Status](https://coveralls.io/repos/github/DrudgeCAS/gristmill/badge.svg?branch=master)](https://coveralls.io/github/DrudgeCAS/gristmill?branch=master)
 
-# gristmill
+<h1 align="center">Gristmill</h1>
 
 Gristmill is a package built on the
-[drudge](https://github.com/tschijnmo/drudge) algebra system for automatic
+[drudge](https://github.com/DrudgeCAS/drudge) algebra system for automatic
 optimization and code generation of tensor computations. While designed for
 quantum chemistry and many-body theory, it is suitable for any scientific
 computing problem involving tensors.
@@ -73,13 +72,72 @@ which has lower FLOP count.
 Additionally, Gristmill includes optimization heuristics such as common
 symmetrization, which ensures intermediates that are equivalent by symmetry are
 computed only once using the canonicalization capability in
-[drudge](https://github.com/tschijnmo/drudge).
+[drudge](https://github.com/DrudgeCAS/drudge).
 
 The code generator in Gristmill is a component orthogonal to the optimizer.
 Both optimized and unoptimized computations can be fed into the code generator
 to yield naive Fortran or C code (with optional OpenMP parallelization) or
 Python code using NumPy.
 
-Gristmill is developed by Jinmo Zhao and Prof. Gustavo E. Scuseria at Rice
-University, supported by the U.S. Department of Energy, Office of Science,
-Basic Energy Sciences under Award DE-SC0012575.
+
+## Citation
+
+If you use Drudge and Gristmill in your work, please cite their GitHub
+repositories and Jinmo Zhao's Ph.D. thesis:
+
+**1. The Drudge GitHub repository**  
+```bibtex
+@misc{DrudgeCAS,
+  author       = {Jinmo Zhao and Guo P. Chen and Gaurav Harsha and Matthew Wholey and Thomas M. Henderson and Gustavo E. Scuseria},
+  title        = {Drudge: A symbolic algebra system for tensorial and noncommutative algebras},
+  publisher    = {GitHub},
+  year         = {2016--2025},
+  url          = {https://github.com/DrudgeCAS/drudge},
+  note         = {GitHub repository}
+}
+```
+
+**2. The Gristmill GitHub repository**  
+```bibtex
+@misc{Gristmill,
+  author       = {Jinmo Zhao and Guo P. Chen and Gaurav Harsha and Thomas M. Henderson and Gustavo E. Scuseria},
+  title        = {Gristmill: A tensor contraction optimizer and code generator based on Drudge},
+  publisher    = {GitHub},
+  year         = {2016--2025},
+  url          = {https://github.com/DrudgeCAS/gristmill},
+  note         = {GitHub repository}
+}
+```
+
+**3. Jinmo Zhao’s Ph.D. thesis**  
+```bibtex
+@phdthesis{Zhao2018Drudge,
+  author       = {Jinmo Zhao},
+  title        = {Symbolic Solution for Computational Quantum Many-Body Theory Development},
+  school       = {Rice University},
+  year         = {2018},
+  month        = {April},
+  address      = {Houston, Texas, USA},
+  type         = {PhD thesis},
+  url          = {https://www.proquest.com/openview/61a9a86c07dbb6e5270bdeb1c84384db/1?pq-origsite=gscholar&cbl=18750&diss=y}
+}
+```
+Link: [Symbolic Solution for Computational Quantum Many-Body Theory Development — Jinmo Zhao (2018)](https://www.proquest.com/openview/61a9a86c07dbb6e5270bdeb1c84384db/1?pq-origsite=gscholar&cbl=18750&diss=y)
+
+---
+
+You may also use the [`CITATION.cff`](./CITATION.cff) file provided in this
+repository, which is compatible with citation managers such as Zotero and
+Mendeley.
+
+
+## Acknowledgments
+
+Gristmill was originally developed by Jinmo Zhao during his Ph.D. at Rice
+University, under the supervision of Prof. Gustavo E. Scuseria. The project was
+supported as part of the Center for the Computational Design of Functional
+Layered Materials, an Energy Frontier Research Center funded by the U.S.
+Department of Energy, Office of Science, Basic Energy Sciences under Award
+DE-SC0012575. The package is currently maintained by Guo P. Chen, Gaurav
+Harsha, and members of the Scueria group.
+
