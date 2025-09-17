@@ -1,5 +1,5 @@
-![CircleCI](https://circleci.com/gh/DrudgeCAS/gristmill.svg?style=shield)
-[![Coverage Status](https://coveralls.io/repos/github/DrudgeCAS/gristmill/badge.svg?branch=master)](https://coveralls.io/github/DrudgeCAS/gristmill?branch=master)
+![CI](https://github.com/chenpeizhi/gristmill/workflows/CI/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/chenpeizhi/gristmill/badge.svg?branch=master)](https://coveralls.io/github/chenpeizhi/gristmill?branch=master)
 
 <h1 align="center">Gristmill</h1>
 
