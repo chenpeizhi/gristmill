@@ -1,5 +1,5 @@
-![CI](https://github.com/chenpeizhi/gristmill/workflows/CI/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/chenpeizhi/gristmill/badge.svg?branch=master)](https://coveralls.io/github/chenpeizhi/gristmill?branch=master)
+![CI](https://github.com/DrudgeCAS/gristmill/workflows/CI/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/DrudgeCAS/gristmill/badge.svg?branch=master)](https://coveralls.io/github/DrudgeCAS/gristmill?branch=master)
 
 <h1 align="center">Gristmill</h1>
 
@@ -63,8 +63,8 @@ can be automatically simplified into
 
 $$
 E = \frac{1}{4} \sum_{i,j=1}^o \sum_{a,b=1}^v u_{ijab} \left(
-    t^{(2)}_{abij} + 2 t^{(1)}_{ai} t^{(1)}_{bj},
-\right)
+    t^{(2)}_{abij} + 2 t^{(1)}_{ai} t^{(1)}_{bj}
+\right),
 $$
 
 which has lower FLOP count.
