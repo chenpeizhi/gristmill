@@ -28,6 +28,14 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
+      - name: Install build dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          # Ensure Xcode command line tools are properly configured
+          sudo xcode-select --install || echo "Command line tools already installed"
+          # Install gcc/gfortran via Homebrew if needed
+          brew install gcc
+
       - name: Build Gristmill
         run: uv sync --locked --extra dev
 
