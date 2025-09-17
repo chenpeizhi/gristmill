@@ -1,6 +1,6 @@
 ![CI](https://github.com/DrudgeCAS/gristmill/workflows/CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/DrudgeCAS/gristmill/badge.svg?branch=master)](https://coveralls.io/github/DrudgeCAS/gristmill?branch=master)
-[![Citation](https://img.shields.io/badge/cite-CITATION.cff-blue)](./CITATION.cff)
+[![Cite this repo](https://img.shields.io/badge/cite-CITATION.cff-blue)](./CITATION.cff)
 
 <h1 align="center">Gristmill</h1>
 
@@ -21,13 +21,13 @@ $$
 can be parenthesized as
 
 $$
-\mathbf{R} = \left( \mathbf{A} \mathbf{B} \right) \mathbf{C}
+\mathbf{R} = ( \mathbf{A} \mathbf{B} ) \mathbf{C}
 $$
 
 or
 
 $$
-\mathbf{R} = \mathbf{A} \left( \mathbf{B} \mathbf{C} \right),
+\mathbf{R} = \mathbf{A} ( \mathbf{B} \mathbf{C} ),
 $$
 
 depending on which has fewer FLOPs given the shapes of the matrices. General
@@ -63,7 +63,7 @@ $$
 can be automatically simplified into
 
 $$
-E = \frac{1}{4} \sum_{i,j=1}^o \sum_{a,b=1}^v u_{ijab} \left(t^{(2)}_{abij} + 2 t^{(1)}_{ai} t^{(1)}_{bj}\right),
+E = \frac{1}{4} \sum_{i,j=1}^o \sum_{a,b=1}^v u_{ijab} (t^{(2)}_{abij} + 2 t^{(1)}_{ai} t^{(1)}_{bj}),
 $$
 
 which has lower FLOP count.
