@@ -79,6 +79,29 @@ to yield naive Fortran or C code (with optional OpenMP parallelization) or
 Python code using NumPy.
 
 
+## Installation
+
+Gristmill can be installed directly from the GitHub repository using
+[uv](https://github.com/astral-sh/uv) (recommended)
+```bash
+uv pip install git+https://github.com/DrudgeCAS/gristmill.git
+```
+or [pip](https://pypi.org/project/pip/)
+```bash
+pip install git+https://github.com/DrudgeCAS/gristmill.git
+```
+
+> **Note:** Native Windows builds are currently not supported. Please use WSL
+> (Windows Subsystem for Linux) to install and run Gristmill on Windows for now.
+
+
+## Documentation
+
+Please refer to the documentation at
+[https://drudgecas.github.io/drudge/](https://drudgecas.github.io/drudge/).
+Additional examples can be found in the `./docs/examples` directory.
+
+
 ## Citation
 
 If you use Drudge and Gristmill in your work, please cite their GitHub
