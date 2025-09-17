@@ -31,13 +31,19 @@ jobs:
       - name: Build Gristmill
         run: uv sync --locked --extra dev
 
+      - name: Setup Fortran
+        uses: fortran-lang/setup-fortran@v1
+        id: setup-fortran
+        with:
+          compiler: gcc
+
       - name: Install coverage tools
         run: uv pip install coverage coveralls
 
       - name: Run tests with coverage
         env:
           DUMMY_SPARK: 1
-        run: uv run coverage run --source=drudge -m pytest tests
+        run: uv run coverage run --source=gristmill --omit="*/templates/*" -m pytest tests
 
       - name: Upload coverage to Coveralls (Ubuntu only)
         if: ${{ always() && matrix.plat.os == 'ubuntu-latest' }}
