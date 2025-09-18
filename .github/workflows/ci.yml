@@ -25,13 +25,13 @@ jobs:
         with:
           python-version-file: "pyproject.toml"
 
-      - name: Install uv
+      - name: Set up uv
         uses: astral-sh/setup-uv@v6
 
-      - name: Build Gristmill
+      - name: Set up Gristmill
         run: uv sync --locked --extra dev
 
-      - name: Setup Fortran
+      - name: Set up Fortran
         uses: fortran-lang/setup-fortran@v1
         id: setup-fortran
         with:

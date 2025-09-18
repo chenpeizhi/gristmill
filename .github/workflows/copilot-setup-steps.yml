@@ -26,10 +26,8 @@ jobs:
         with:
           python-version-file: "pyproject.toml"
 
-      - name: Setup uv
+      - name: Set up uv
         uses: astral-sh/setup-uv@v6
 
-      - name: Build Gristmill
-        run: |
-          uv sync --locked --extra dev
-          uv build
+      - name: Set up Gristmill
+        run: uv sync --locked --extra dev
