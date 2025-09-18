@@ -8,9 +8,9 @@ Gristmill is a tensor contraction optimizer and code generator built on top of t
 **Size**: ~7k lines of Python code in main package  
 **Languages**: Python 3.12+, C++17  
 **Main Components**:
-- `gristmill/optimize.py` (2967 lines) - Core optimization algorithms  
-- `gristmill/generate.py` (1557 lines) - Code generation and printers  
-- `gristmill/utils.py` (612 lines) - Utility functions including FLOP counting  
+- `gristmill/optimize.py` - Core optimization algorithms  
+- `gristmill/generate.py` - Code generation and printers  
+- `gristmill/utils.py` - Utility functions including FLOP counting  
 
 **Key Dependencies**: drudge, sympy, numpy, networkx, jinja2  
 **Build Dependencies**: C++ compiler with C++17 support, Python setuptools
@@ -66,15 +66,7 @@ uv run pytest tests -v
 
 Tests require the virtual environment created by uv. Running tests outside the uv environment will fail with import errors.
 
-### 4. Coverage Testing (as used in CI)
-
-```bash
-uv pip install coverage
-export DUMMY_SPARK=1
-uv run coverage run --source=gristmill --omit="*/templates/*" -m pytest tests
-```
-
-### 5. Documentation Building
+### 4. Documentation Building
 
 Requires sphinx and the uv environment:
 ```bash
@@ -98,11 +90,11 @@ uv run make html
 ### Source Layout
 ```
 gristmill/
-├── __init__.py          # Main exports (27 lines)
-├── generate.py          # Code generation framework (1557 lines)
-├── optimize.py          # Tensor optimization algorithms (2967 lines)
-├── utils.py             # Utilities and FLOP counting (612 lines)
-├── _parenth.cpp         # C++ extension for parenthesization (368 lines)
+├── __init__.py          # Main exports
+├── generate.py          # Code generation framework
+├── optimize.py          # Tensor optimization algorithms
+├── utils.py             # Utilities and FLOP counting
+├── _parenth.cpp         # C++ extension for parenthesization
 └── templates/           # Code generation templates
     ├── einsum           # NumPy einsum template
     ├── naiveterm        # Naive term evaluation template  
@@ -112,11 +104,11 @@ gristmill/
 ### Test Layout
 ```
 tests/
-├── conftest.py          # Pytest configuration with Spark context setup
-├── opt_cc_test.py       # Coupled cluster optimization tests (268 lines)
-├── opt_matrix_test.py   # Matrix optimization tests (570 lines)
-├── opt_misc_test.py     # Miscellaneous optimization tests (230 lines)
-└── printers_test.py     # Code generation printer tests (491 lines)
+├── conftest.py          # Pytest configuration for Drudge scripts
+├── opt_cc_test.py       # Coupled cluster optimization tests
+├── opt_matrix_test.py   # Matrix multiplication optimization tests
+├── opt_misc_test.py     # Miscellaneous optimization tests
+└── printers_test.py     # Code generation printer tests
 ```
 
 ### C++ Dependencies (in deps/ subdirectory)
@@ -125,7 +117,7 @@ tests/
 - `libparenth/` - Parenthesization algorithms
 
 ### CI/CD Workflows
-- `.github/workflows/ci.yml` - Main CI pipeline (Ubuntu/macOS, Python 3.12)
+- `.github/workflows/ci.yml` - Main CI pipeline (Ubuntu/macOS)
 - `.github/workflows/copilot-setup-steps.yml` - Reference setup steps
 
 ## Common Issues and Solutions
@@ -142,22 +134,18 @@ tests/
 **Problem**: Extension build fails  
 **Solution**: Ensure C++ compiler supports C++17 and submodules are initialized.
 
-### Documentation Build Errors  
-**Problem**: sphinx cannot import gristmill  
-**Solution**: Use `uv run make html` from docs directory, not bare `make html`.
-
 ## Key Facts for Code Changes
 
 ### Main Public API (from `__init__.py`)
 - `optimize()` - Main optimization function
-- `verify_eval_seq()` - Sequence verification
+- `verify_eval_seq()` - Evaluation sequence verification
 - `get_flop_cost()` - FLOP cost calculation
-- Printer classes: `BasePrinter`, `FortranPrinter`, `EinsumPrinter`, etc.
+- Printer classes: `BasePrinter`, `CPrinter`, `FortranPrinter`, `EinsumPrinter`, etc.
 
 ### Critical Test Requirements
 - Tests expect `DUMMY_SPARK=1` environment variable
 - All tests run through pytest framework
-- Some tests are marked as `xfail` (expected failures) - don't try to fix them
+- Some tests are marked as `xfail` (expected failures)
 - Tests validate mathematical correctness of optimizations
 
 ### Code Generation
@@ -169,7 +157,7 @@ tests/
 
 After making changes, always run in this order:
 1. `export DUMMY_SPARK=1`
-2. `uv run pytest tests` (expect: 30 passed, 2 xfailed)
+2. `uv run pytest tests`
 3. `uv run python -c "import gristmill; print('OK')"`
 4. For documentation changes: `cd docs && uv run make html`
 
