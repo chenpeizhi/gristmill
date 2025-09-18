@@ -4,11 +4,11 @@
 
 <h1 align="center">Gristmill</h1>
 
-Gristmill is a package built on the
-[drudge](https://github.com/DrudgeCAS/drudge) algebra system for automatic
-optimization and code generation of tensor computations. While designed for
-quantum chemistry and many-body theory, it is suitable for any scientific
-computing problem involving tensors.
+Gristmill is a package built upon the
+[drudge](https://github.com/DrudgeCAS/drudge) computer algebra system for
+automatic optimization and code generation of tensor computations. While
+designed for quantum chemistry and many-body theory, it is suitable for any
+scientific computing problem involving tensors.
 
 The optimizer utilizes advanced algorithms to efficiently parenthesize and
 factorize tensor computations, reducing the floating-point operation (FLOP)
