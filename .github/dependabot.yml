@@ -1,7 +1,7 @@
 version: 2
 updates:
-  # Update Python dependencies monthly
-  - package-ecosystem: "pip"
+  # Update Python dependencies monthly using uv
+  - package-ecosystem: "uv"
     directory: "/"
     schedule:
       interval: "monthly"

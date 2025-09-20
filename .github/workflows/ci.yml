@@ -14,14 +14,12 @@ jobs:
           - { os: macos-latest,  name: macOS }
 
     steps:
-      - uses: actions/checkout@v5
-
-      - name: Download submodules
-        shell: bash
-        run: git submodule update --init --recursive
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version-file: "pyproject.toml"
 
