@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # Update Python dependencies monthly
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    # Limit the number of open pull requests
+    open-pull-requests-limit: 5
+    # Group all updates into a single PR for easier management
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+    # Add useful commit message prefix
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    # Allow updates for both version updates and security fixes
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    # Ignore git-based dependencies as they need manual handling
+    ignore:
+      - dependency-name: "drudge"
