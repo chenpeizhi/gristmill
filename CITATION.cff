@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use Gristmill, please cite the following works."
+authors:
+  - family-names: Zhao
+    given-names: Jinmo
+  - family-names: Chen
+    given-names: Guo P.
+  - family-names: Harsha
+    given-names: Gaurav
+  - family-names: Henderson
+    given-names: Thomas M.
+  - family-names: Scuseria
+    given-names: Gustavo E.
+title: "Gristmill: A tensor contraction optimizer and code generator based on Drudge"
+type: software
+repository-code: "https://github.com/DrudgeCAS/gristmill"
+abstract: "Gristmill is a package built on the drudge algebra system for automatic optimization and code generation of tensor computations. While designed for quantum chemistry and many-body theory, it is suitable for any scientific computing problem involving tensors."
+keywords:
+  - tensor optimization
+  - code generation
+  - quantum chemistry
+  - many-body theory
+  - computational chemistry
+license: MIT
+version: 0.9.0
+date-released: 2025-09-16
+
+references:
+  - type: thesis
+    authors:
+      - family-names: Zhao
+        given-names: Jinmo
+    title: "Symbolic Solution for Computational Quantum Many-Body Theory Development"
+    year: 2018
+    month: 4
+    publisher: Rice University
+    thesis-type: "PhD thesis"
+    url: "https://www.proquest.com/openview/61a9a86c07dbb6e5270bdeb1c84384db/1?pq-origsite=gscholar&cbl=18750&diss=y"
+

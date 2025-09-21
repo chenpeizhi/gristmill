@@ -54,7 +54,7 @@ class SVPoly(Polynomial):
     def _comp(self, other):
         """Make a comparison with another size quantity."""
 
-        if other is 0:
+        if other == 0:
             return self._comp_w_zero()
 
         l_deg = self.degree()

@@ -1,19 +1,9 @@
 """Setup script for gristmill."""
 
 import os.path
+import sys
 from setuptools import setup, find_packages, Extension
 
-with open('README.rst', 'r') as readme:
-    DESCRIPTION = readme.read()
-
-CLASSIFIERS = [
-    'Development Status :: 1 - Planning',
-    'Intended Audience :: Developers',
-    'Intended Audience :: Science/Research',
-    'License :: OSI Approved :: MIT License',
-    'Programming Language :: Python :: 3 :: Only',
-    'Topic :: Scientific/Engineering :: Mathematics'
-]
 
 PROJ_ROOT = os.path.dirname(os.path.abspath(__file__))
 INCLUDE_DIRS = [
@@ -21,7 +11,21 @@ INCLUDE_DIRS = [
     for i in ['cpypp', 'fbitset', 'libparenth']
 ]
 
-COMPILE_FLAGS = ['-std=gnu++1z']
+# Platform-specific compiler flags
+if sys.platform == "win32":
+    # MSVC compiler flags
+    COMPILE_FLAGS = ['/std:c++17']
+else:
+    # GCC/Clang compiler flags  
+    COMPILE_FLAGS = ['-std=c++17']
+    
+    # Additional flags for macOS to avoid header conflicts
+    if sys.platform == "darwin":
+        # Use libc++ standard library explicitly on macOS
+        COMPILE_FLAGS.extend([
+            '-stdlib=libc++',
+            '-mmacosx-version-min=10.9'
+        ])
 
 parenth = Extension(
     'gristmill._parenth',
@@ -31,17 +35,7 @@ parenth = Extension(
 )
 
 setup(
-    name='gristmill',
-    version='0.8.0dev0',
-    description=DESCRIPTION.splitlines()[0],
-    long_description=DESCRIPTION,
-    url='https://github.com/tschijnmo/gristmill',
-    author='Jinmo Zhao and Gustavo E Scuseria',
-    author_email='tschijnmotschau@gmail.com',
-    license='MIT',
-    classifiers=CLASSIFIERS,
     packages=find_packages(),
     ext_modules=[parenth],
     package_data={'gristmill': ['templates/*']},
-    install_requires=['drudge', 'Jinja2', 'sympy>=1.7', 'numpy', 'networkx>=2.0']
 )
