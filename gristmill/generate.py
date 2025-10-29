@@ -1560,7 +1560,7 @@ class OMEinsumPrinter(BasePrinter):
     """Printer for Julia using the `OMEinsum.jl` package
 
     For tensors that are classical tensor contractions, this printer generates
-    using the ``@ein_str`` macro in `OMEinsum.jl`.
+    Julia code using the ``@ein_str`` macro in `OMEinsum.jl`.
 
     Parameters
     ----------
