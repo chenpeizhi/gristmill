@@ -746,44 +746,33 @@ diff2 = linalg.norm((R2 - expected_r2) / expected_r2)
 
 
 def _test_julia_code(code, dir):
-    """Test the given Julia code in the given directory.
+    """Test the given Julia code using juliacall.
 
-    The Julia code is expected to generate an output of ``OK``.
+    The Julia code is expected to set a variable 'test_passed' to true.
     
-    Returns True if Julia is available and test passes, False if Julia not available.
+    Returns True if juliacall is available and test passes, False if not available.
     """
     
-    # Check if Julia is available
+    # Check if juliacall is available
     try:
-        result = subprocess.run(['julia', '--version'], 
-                              capture_output=True, timeout=5)
-        if result.returncode != 0:
-            return False
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        return False
-
-    orig_cwd = dir.chdir()
-
-    dir.join('test.jl').write(code)
-    stat = subprocess.run(['julia', 'test.jl'], 
-                         capture_output=True, 
-                         text=True,
-                         timeout=120)
-    
-    orig_cwd.chdir()
-    
-    if stat.returncode != 0:
-        print(f"Julia execution failed with return code {stat.returncode}")
-        print(f"STDOUT: {stat.stdout}")
-        print(f"STDERR: {stat.stderr}")
+        from juliacall import Main as jl
+    except ImportError:
         return False
     
-    if "OK" not in stat.stdout:
-        print(f"Test did not produce OK output")
-        print(f"STDOUT: {stat.stdout}")
+    try:
+        # Load OMEinsum (should be installed via juliapkg.json)
+        jl.seval("using OMEinsum")
+        jl.seval("using LinearAlgebra")
+        
+        # Execute the test code
+        jl.seval(code)
+        
+        # Check if test passed
+        test_passed = jl.seval("test_passed")
+        return bool(test_passed)
+    except Exception as e:
+        print(f"Julia execution failed: {e}")
         return False
-    
-    return True
 
 
 def test_omeinsum_printer(simple_drudge, tmpdir):
@@ -813,14 +802,6 @@ def test_omeinsum_printer(simple_drudge, tmpdir):
 
 
 _OMEINSUM_DRIVER_CODE = """
-using Pkg
-try
-    using OMEinsum
-catch
-    Pkg.add("OMEinsum")
-    using OMEinsum
-end
-
 n = 2
 u = [1.0 2.0; 3.0 4.0]
 v = [1.0 0.0; 0.0 1.0]
@@ -830,11 +811,7 @@ v = [1.0 0.0; 0.0 1.0]
 expected = transpose(u .^ 2) - (2.0 / 3.0) * (u * v)
 diff = maximum(abs.(x .- expected))
 
-if diff < 1.0e-5
-    println("OK")
-else
-    println("WRONG: difference = ", diff)
-end
+test_passed = diff < 1.0e-5
 """
 
 
@@ -853,16 +830,6 @@ def test_full_omeinsum_printer(eval_seq_deps, tmpdir):
 
 
 _FULL_OMEINSUM_DRIVER_CODE = """
-using Pkg
-try
-    using OMEinsum
-    using LinearAlgebra
-catch
-    Pkg.add("OMEinsum")
-    using OMEinsum
-    using LinearAlgebra
-end
-
 n = 10
 
 X = rand(n, n)
@@ -879,9 +846,5 @@ expected_R2 = XY * 2
 diff1 = maximum(abs.((R1 .- expected_R1) ./ expected_R1))
 diff2 = maximum(abs.((R2 .- expected_R2) ./ expected_R2))
 
-if diff1 < 1.0e-5 && diff2 < 1.0e-5
-    println("OK")
-else
-    println("WRONG: diff1 = ", diff1, ", diff2 = ", diff2)
-end
+test_passed = (diff1 < 1.0e-5) && (diff2 < 1.0e-5)
 """

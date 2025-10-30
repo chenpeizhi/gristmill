@@ -29,22 +29,13 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Set up Gristmill
-        run: uv sync --locked --extra dev
+        run: uv sync --locked --extra dev --extra julia
 
       - name: Set up Fortran
         uses: fortran-lang/setup-fortran@v1
         id: setup-fortran
         with:
           compiler: gcc
-
-      - name: Set up Julia
-        uses: julia-actions/setup-julia@v2
-        with:
-          version: '1.11'
-
-      - name: Install OMEinsum.jl
-        shell: bash
-        run: julia -e 'using Pkg; Pkg.add("OMEinsum")'
 
       - name: Install coverage tools
         run: uv pip install coverage coveralls
