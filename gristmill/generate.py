@@ -17,7 +17,6 @@ from sympy.printing.c import C89CodePrinter
 from sympy.printing.fortran import FCodePrinter
 from sympy.printing.pycode import PythonCodePrinter
 from sympy.printing.julia import JuliaCodePrinter
-from numpy import dtype
 
 from drudge import TensorDef, Term, Range, prod_
 from .utils import JinjaEnv
@@ -1527,7 +1526,7 @@ class EinsumPrinter(BasePrinter):
             if self._default_type is None:
                 rhs = '0.0'
             else:
-                rhs = dtype(self._default_type).type(0)
+                rhs = "dtype('{}').type(0)".format(self._default_type)
 
         return '{} = {}'.format(ctx.base, rhs)
 
