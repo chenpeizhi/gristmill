@@ -9,7 +9,7 @@ from sympy import Symbol, IndexedBase, symbols, Float
 from sympy.printing.python import PythonPrinter
 
 from drudge import Drudge, Range
-from gristmill import BasePrinter, CPrinter, FortranPrinter, EinsumPrinter, mangle_base
+from gristmill import BasePrinter, CPrinter, FortranPrinter, EinsumPrinter, OMEinsumPrinter, mangle_base
 from gristmill.generate import (
     TensorDecl, BeginBody, BeforeComp, CompTerm, OutOfUse, EndBody
 )
@@ -742,4 +742,146 @@ global diff2
 diff1 = linalg.norm((R1 - expected_r1) / expected_r1)
 diff2 = linalg.norm((R2 - expected_r2) / expected_r2)
 
+"""
+
+
+def _test_julia_code(code, dir):
+    """Test the given Julia code in the given directory.
+
+    The Julia code is expected to generate an output of ``OK``.
+    
+    Returns True if Julia is available and test passes, False if Julia not available.
+    """
+    
+    # Check if Julia is available
+    try:
+        result = subprocess.run(['julia', '--version'], 
+                              capture_output=True, timeout=5)
+        if result.returncode != 0:
+            return False
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return False
+
+    orig_cwd = dir.chdir()
+
+    dir.join('test.jl').write(code)
+    stat = subprocess.run(['julia', 'test.jl'], 
+                         capture_output=True, 
+                         text=True,
+                         timeout=120)
+    
+    orig_cwd.chdir()
+    
+    if stat.returncode != 0:
+        print(f"Julia execution failed with return code {stat.returncode}")
+        print(f"STDOUT: {stat.stdout}")
+        print(f"STDERR: {stat.stderr}")
+        return False
+    
+    if "OK" not in stat.stdout:
+        print(f"Test did not produce OK output")
+        print(f"STDOUT: {stat.stdout}")
+        return False
+    
+    return True
+
+
+def test_omeinsum_printer(simple_drudge, tmpdir):
+    """Test the basic functionality of the OMEinsum printer.
+    """
+    
+    dr = simple_drudge
+    p = dr.names
+    a, b, c = p.R_dumms[:3]
+
+    x = IndexedBase('x')
+    u = IndexedBase('u')
+    v = IndexedBase('v')
+
+    tensor = dr.define_einst(
+        x[a, b], u[b, a] ** 2 - 2 * u[a, c] * v[c, b] / 3
+    )
+
+    printer = OMEinsumPrinter()
+    code = printer.doprint([tensor])
+
+    julia_test_code = _OMEINSUM_DRIVER_CODE.format(code=code)
+    
+    result = _test_julia_code(julia_test_code, tmpdir)
+    if not result:
+        pytest.skip("Julia or OMEinsum.jl not available")
+
+
+_OMEINSUM_DRIVER_CODE = """
+using Pkg
+try
+    using OMEinsum
+catch
+    Pkg.add("OMEinsum")
+    using OMEinsum
+end
+
+n = 2
+u = [1.0 2.0; 3.0 4.0]
+v = [1.0 0.0; 0.0 1.0]
+
+{code}
+
+expected = transpose(u .^ 2) - (2.0 / 3.0) * (u * v)
+diff = maximum(abs.(x .- expected))
+
+if diff < 1.0e-5
+    println("OK")
+else
+    println("WRONG: difference = ", diff)
+end
+"""
+
+
+def test_full_omeinsum_printer(eval_seq_deps, tmpdir):
+    """Test the full functionality of the OMEinsum printer.
+    """
+    eval_seq = eval_seq_deps
+    printer = OMEinsumPrinter()
+    code = printer.doprint(eval_seq)
+    
+    julia_test_code = _FULL_OMEINSUM_DRIVER_CODE.format(eval=code)
+    
+    result = _test_julia_code(julia_test_code, tmpdir)
+    if not result:
+        pytest.skip("Julia or OMEinsum.jl not available")
+
+
+_FULL_OMEINSUM_DRIVER_CODE = """
+using Pkg
+try
+    using OMEinsum
+    using LinearAlgebra
+catch
+    Pkg.add("OMEinsum")
+    using OMEinsum
+    using LinearAlgebra
+end
+
+n = 10
+
+X = rand(n, n)
+Y = rand(n, n)
+
+{eval}
+
+XY = X * Y
+YX = Y * X
+tr_val = tr(XY)
+expected_R1 = XY * tr_val + YX
+expected_R2 = XY * 2
+
+diff1 = maximum(abs.((R1 .- expected_R1) ./ expected_R1))
+diff2 = maximum(abs.((R2 .- expected_R2) ./ expected_R2))
+
+if diff1 < 1.0e-5 && diff2 < 1.0e-5
+    println("OK")
+else
+    println("WRONG: diff1 = ", diff1, ", diff2 = ", diff2)
+end
 """
