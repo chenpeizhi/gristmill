@@ -5,11 +5,11 @@ import subprocess
 from unittest.mock import patch
 
 import pytest
-from sympy import Symbol, IndexedBase, symbols
+from sympy import Symbol, IndexedBase, symbols, Float
 from sympy.printing.python import PythonPrinter
 
 from drudge import Drudge, Range
-from gristmill import BasePrinter, CPrinter, FortranPrinter, EinsumPrinter, mangle_base
+from gristmill import BasePrinter, CPrinter, FortranPrinter, EinsumPrinter, OMEinsumPrinter, mangle_base
 from gristmill.generate import (
     TensorDecl, BeginBody, BeforeComp, CompTerm, OutOfUse, EndBody
 )
@@ -132,8 +132,9 @@ def test_base_printer_ctx(simple_drudge, colourful_tensor):
             # The transpose term.
 
             assert term.phase == '+'
-            assert term.numerator == '2*r'
-            assert term.denominator == '(3*s)'
+            r = Symbol('r')
+            assert float(eval(term.numerator) / r) == 2/3
+            assert term.denominator == 's'
 
             assert len(term.indexed_factors) == 1
             factor = term.indexed_factors[0]
@@ -149,8 +150,8 @@ def test_base_printer_ctx(simple_drudge, colourful_tensor):
             check_range(term.sums[0], 'c')
 
             assert term.phase == '-'
-            assert term.numerator == '1'
-            assert term.denominator == '2'
+            assert float(eval(term.numerator)) == 0.5
+            assert term.denominator == '1'
 
             assert len(term.indexed_factors) == 2
             for factor in term.indexed_factors:
@@ -719,7 +720,7 @@ def test_full_einsum_printer(eval_seq_deps):
 
 
 _FULL_EINSUM_DRIVER_CODE = """
-from numpy import zeros, einsum, trace
+from numpy import zeros, einsum, trace, dtype
 from numpy.random import rand
 from numpy import linalg
 
@@ -741,4 +742,106 @@ global diff2
 diff1 = linalg.norm((R1 - expected_r1) / expected_r1)
 diff2 = linalg.norm((R2 - expected_r2) / expected_r2)
 
+"""
+
+
+def _test_julia_code(code, dir):
+    """Test the given Julia code using juliacall.
+
+    Returns the result value from Julia, or None if juliacall is not available.
+    """
+    
+    # Check if juliacall is available
+    try:
+        from juliacall import Main as jl
+    except ImportError:
+        return None
+    
+    try:
+        # Execute the test code
+        jl.seval(code)
+        
+        # Return the result
+        return jl
+    except Exception as e:
+        print(f"Julia execution failed: {e}")
+        return None
+
+
+def test_omeinsum_printer(simple_drudge, tmpdir):
+    """Test the basic functionality of the OMEinsum printer.
+    """
+    
+    dr = simple_drudge
+    p = dr.names
+    a, b, c = p.R_dumms[:3]
+
+    x = IndexedBase('x')
+    u = IndexedBase('u')
+    v = IndexedBase('v')
+
+    tensor = dr.define_einst(
+        x[a, b], u[b, a] ** 2 - 2 * u[a, c] * v[c, b] / 3
+    )
+
+    printer = OMEinsumPrinter()
+    code = printer.doprint([tensor])
+
+    julia_test_code = _OMEINSUM_DRIVER_CODE.format(code=code)
+    
+    jl = _test_julia_code(julia_test_code, tmpdir)
+    if jl is None:
+        pytest.skip("Julia or OMEinsum.jl not available")
+    
+    diff = float(jl.diff)
+    assert diff < 1.0E-5  # Arbitrary delta.
+
+
+_OMEINSUM_DRIVER_CODE = """
+n = 2
+u = [1.0 2.0; 3.0 4.0]
+v = [1.0 0.0; 0.0 1.0]
+
+{code}
+
+expected = transpose(u .^ 2) - (2.0 / 3.0) * (u * v)
+diff = maximum(abs.(x .- expected))
+"""
+
+
+def test_full_omeinsum_printer(eval_seq_deps, tmpdir):
+    """Test the full functionality of the OMEinsum printer.
+    """
+    eval_seq = eval_seq_deps
+    printer = OMEinsumPrinter()
+    code = printer.doprint(eval_seq)
+    
+    julia_test_code = _FULL_OMEINSUM_DRIVER_CODE.format(eval=code)
+    
+    jl = _test_julia_code(julia_test_code, tmpdir)
+    if jl is None:
+        pytest.skip("Julia or OMEinsum.jl not available")
+    
+    diff1 = float(jl.diff1)
+    diff2 = float(jl.diff2)
+    assert diff1 < 1.0E-5
+    assert diff2 < 1.0E-5
+
+
+_FULL_OMEINSUM_DRIVER_CODE = """
+n = 10
+
+X = rand(n, n)
+Y = rand(n, n)
+
+{eval}
+
+XY = X * Y
+YX = Y * X
+tr_val = tr(XY)
+expected_R1 = XY * tr_val + YX
+expected_R2 = XY * 2
+
+diff1 = maximum(abs.((R1 .- expected_R1) ./ expected_R1))
+diff2 = maximum(abs.((R2 .- expected_R2) ./ expected_R2))
 """

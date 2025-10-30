@@ -34,7 +34,7 @@ maintainers = [
 
 [project.optional-dependencies]
 docs = ["sphinx"]
-dev = ["pytest"]
+dev = ["pytest", "juliacall>=0.9.20"]
 
 [project.urls]
 Homepage = "https://github.com/DrudgeCAS/gristmill"
