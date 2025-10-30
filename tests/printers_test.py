@@ -748,16 +748,14 @@ diff2 = linalg.norm((R2 - expected_r2) / expected_r2)
 def _test_julia_code(code, dir):
     """Test the given Julia code using juliacall.
 
-    The Julia code is expected to set a variable 'test_passed' to true.
-    
-    Returns True if juliacall is available and test passes, False if not available.
+    Returns the result value from Julia, or None if juliacall is not available.
     """
     
     # Check if juliacall is available
     try:
         from juliacall import Main as jl
     except ImportError:
-        return False
+        return None
     
     try:
         # Load OMEinsum (should be installed via juliapkg.json)
@@ -767,12 +765,11 @@ def _test_julia_code(code, dir):
         # Execute the test code
         jl.seval(code)
         
-        # Check if test passed
-        test_passed = jl.seval("test_passed")
-        return bool(test_passed)
+        # Return the result
+        return jl
     except Exception as e:
         print(f"Julia execution failed: {e}")
-        return False
+        return None
 
 
 def test_omeinsum_printer(simple_drudge, tmpdir):
@@ -796,9 +793,12 @@ def test_omeinsum_printer(simple_drudge, tmpdir):
 
     julia_test_code = _OMEINSUM_DRIVER_CODE.format(code=code)
     
-    result = _test_julia_code(julia_test_code, tmpdir)
-    if not result:
+    jl = _test_julia_code(julia_test_code, tmpdir)
+    if jl is None:
         pytest.skip("Julia or OMEinsum.jl not available")
+    
+    diff = float(jl.diff)
+    assert diff < 1.0E-5  # Arbitrary delta.
 
 
 _OMEINSUM_DRIVER_CODE = """
@@ -810,8 +810,6 @@ v = [1.0 0.0; 0.0 1.0]
 
 expected = transpose(u .^ 2) - (2.0 / 3.0) * (u * v)
 diff = maximum(abs.(x .- expected))
-
-test_passed = diff < 1.0e-5
 """
 
 
@@ -824,9 +822,14 @@ def test_full_omeinsum_printer(eval_seq_deps, tmpdir):
     
     julia_test_code = _FULL_OMEINSUM_DRIVER_CODE.format(eval=code)
     
-    result = _test_julia_code(julia_test_code, tmpdir)
-    if not result:
+    jl = _test_julia_code(julia_test_code, tmpdir)
+    if jl is None:
         pytest.skip("Julia or OMEinsum.jl not available")
+    
+    diff1 = float(jl.diff1)
+    diff2 = float(jl.diff2)
+    assert diff1 < 1.0E-5
+    assert diff2 < 1.0E-5
 
 
 _FULL_OMEINSUM_DRIVER_CODE = """
@@ -845,6 +848,4 @@ expected_R2 = XY * 2
 
 diff1 = maximum(abs.((R1 .- expected_R1) ./ expected_R1))
 diff2 = maximum(abs.((R2 .- expected_R2) ./ expected_R2))
-
-test_passed = (diff1 < 1.0e-5) && (diff2 < 1.0e-5)
 """
