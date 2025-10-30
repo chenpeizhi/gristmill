@@ -1503,9 +1503,10 @@ class EinsumPrinter(BasePrinter):
         return None
 
     def print_begin_body(self, event: BeginBody):
-        """Do nothing.
+        """Import packages.
         """
-        return None
+        preamble = "from numpy import zeros, dtype"
+        return preamble
 
     def print_before_comp(self, event: BeforeComp):
         """Initialize the tensor to zero.
@@ -1519,7 +1520,7 @@ class EinsumPrinter(BasePrinter):
             if self._default_type is None:
                 args = shape
             else:
-                args = '{}, dtype={}'.format(shape, self._default_type)
+                args = "{}, dtype='{}'".format(shape, self._default_type)
 
             rhs = '{}({})'.format(self._zeros, args)
         else:
@@ -1600,9 +1601,10 @@ class OMEinsumPrinter(BasePrinter):
         return None
 
     def print_begin_body(self, event: BeginBody):
-        """Do nothing.
+        """Import packages.
         """
-        return None
+        preamble = "using LinearAlgebra, OMEinsum" 
+        return preamble
 
     def print_before_comp(self, event: BeforeComp):
         """Initialize the tensor to zero.

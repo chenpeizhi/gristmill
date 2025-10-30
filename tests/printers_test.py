@@ -720,7 +720,7 @@ def test_full_einsum_printer(eval_seq_deps):
 
 
 _FULL_EINSUM_DRIVER_CODE = """
-from numpy import zeros, einsum, trace
+from numpy import zeros, einsum, trace, dtype
 from numpy.random import rand
 from numpy import linalg
 
@@ -758,10 +758,6 @@ def _test_julia_code(code, dir):
         return None
     
     try:
-        # Load OMEinsum (should be installed via juliapkg.json)
-        jl.seval("using OMEinsum")
-        jl.seval("using LinearAlgebra")
-        
         # Execute the test code
         jl.seval(code)
         
