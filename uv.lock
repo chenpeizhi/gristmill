@@ -156,27 +156,25 @@ dependencies = [
 
 [package.optional-dependencies]
 dev = [
+    { name = "juliacall" },
     { name = "pytest" },
 ]
 docs = [
     { name = "sphinx" },
-]
-julia = [
-    { name = "juliacall" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "drudge", git = "https://github.com/DrudgeCAS/drudge.git?rev=master" },
     { name = "jinja2" },
-    { name = "juliacall", marker = "extra == 'julia'", specifier = ">=0.9.20" },
+    { name = "juliacall", marker = "extra == 'dev'", specifier = ">=0.9.20" },
     { name = "networkx", specifier = ">=2.0" },
     { name = "numpy" },
     { name = "pytest", marker = "extra == 'dev'" },
     { name = "sphinx", marker = "extra == 'docs'" },
     { name = "sympy", specifier = ">=1.14" },
 ]
-provides-extras = ["docs", "dev", "julia"]
+provides-extras = ["docs", "dev"]
 
 [[package]]
 name = "idna"
