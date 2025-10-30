@@ -5,7 +5,7 @@ import subprocess
 from unittest.mock import patch
 
 import pytest
-from sympy import Symbol, IndexedBase, symbols
+from sympy import Symbol, IndexedBase, symbols, Float
 from sympy.printing.python import PythonPrinter
 
 from drudge import Drudge, Range
