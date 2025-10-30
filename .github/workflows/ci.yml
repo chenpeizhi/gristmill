@@ -37,6 +37,15 @@ jobs:
         with:
           compiler: gcc
 
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.11'
+
+      - name: Install OMEinsum.jl
+        shell: bash
+        run: julia -e 'using Pkg; Pkg.add("OMEinsum")'
+
       - name: Install coverage tools
         run: uv pip install coverage coveralls
 
