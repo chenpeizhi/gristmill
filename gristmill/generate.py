@@ -17,6 +17,7 @@ from sympy.printing.c import C89CodePrinter
 from sympy.printing.fortran import FCodePrinter
 from sympy.printing.pycode import PythonCodePrinter
 from sympy.printing.julia import JuliaCodePrinter
+from numpy import dtype
 
 from drudge import TensorDef, Term, Range, prod_
 from .utils import JinjaEnv
@@ -1467,9 +1468,8 @@ class EinsumPrinter(BasePrinter):
     zeros
         The name of the constructor for an array of zeroes.
 
-    dtype
-        The data type for the construction of tensors.  A value of None will
-        give no ``dtype`` argument.
+    default_type
+        The default data type for the construction of tensors.
 
     einsum
         The name of the einsum function.
@@ -1477,7 +1477,7 @@ class EinsumPrinter(BasePrinter):
     """
 
     def __init__(
-            self, zeros='zeros', dtype=None, einsum='einsum', extr_unary=True,
+            self, zeros='zeros', default_type='float64', einsum='einsum', extr_unary=True,
             add_globals=None, **kwargs
     ):
         """Initialize the printer.
@@ -1495,7 +1495,7 @@ class EinsumPrinter(BasePrinter):
         )
 
         self._zeros = zeros
-        self._dtype = dtype
+        self._default_type = default_type
         self._einsum = einsum
 
     def print_decl(self, event: TensorDecl):
@@ -1517,14 +1517,17 @@ class EinsumPrinter(BasePrinter):
             shape = '({})'.format(', '.join(
                 i.size for i in ctx.indices
             ))
-            if self._dtype is None:
+            if self._default_type is None:
                 args = shape
             else:
-                args = '{}, dtype={}'.format(shape, self._dtype)
+                args = '{}, dtype={}'.format(shape, self._default_type)
 
             rhs = '{}({})'.format(self._zeros, args)
         else:
-            rhs = '0.0'
+            if self._default_type is None:
+                rhs = '0.0'
+            else:
+                rhs = dtype(self._default_type).type(0)
 
         return '{} = {}'.format(ctx.base, rhs)
 

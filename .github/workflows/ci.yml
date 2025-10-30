@@ -29,7 +29,7 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Set up Gristmill
-        run: uv sync --locked --extra dev --extra julia
+        run: uv sync --locked --extra dev
 
       - name: Set up Fortran
         uses: fortran-lang/setup-fortran@v1
